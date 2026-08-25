@@ -1,0 +1,11 @@
+frontend/node_modules/
+frontend/dist/
+backend/__pycache__/
+backend/artifacts/*.json
+backend/models/*.pkl
+*.log
+
+# Watermarked iStock preview clip — trial-only until licensed, must not be committed/shared
+frontend/public/videos/
+
+

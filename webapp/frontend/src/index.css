@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #060d1a;
+  --bg-elevated: rgba(15, 24, 38, 0.62);
+  --bg-elevated-solid: #101a29;
+  --bg-elevated-2: rgba(20, 31, 46, 0.7);
+  --bg-hover: rgba(255, 255, 255, 0.045);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --text: #f1efec;
+  --text-secondary: #a8a3ad;
+  --text-tertiary: #6f6b78;
+
+  --accent: #e0a458;
+  --accent-soft: rgba(224, 164, 88, 0.13);
+  --accent-border: rgba(224, 164, 88, 0.38);
+  --accent-ink: #241804;
+
+  --accent-2: #6fb8b8;
+  --accent-2-soft: rgba(111, 184, 184, 0.13);
+  --accent-2-border: rgba(111, 184, 184, 0.35);
+
+  --risk-low: #5fcf9c;
+  --risk-mid: #e8b95f;
+  --risk-high: #e0748a;
+
+  /* Faceted prism accent — one warm tone (amber, matching --accent), not a rainbow. A prism
+     refracts light into a spectrum, but the actual *material* is a single piece of cut glass:
+     dark where a facet turns away from the light, bright gold where it catches it. Used
+     deliberately, not everywhere: logo, hero accents, primary CTA, active-state glows. */
+  --facet-shadow: #1c1208;
+  --facet-gold: #f3c98a;
+  --facet-gradient: linear-gradient(
+    135deg,
+    var(--facet-shadow) 0%,
+    #7a4f1f 22%,
+    var(--accent) 48%,
+    var(--facet-gold) 62%,
+    #8a5a26 80%,
+    var(--facet-shadow) 100%
+  );
+
+  /* Refracted light beam — the literal rainbow. Used in exactly one place: the light-beam
+     graphic behind the Home hero, standing in for the physical moment a prism splits light.
+     Not a UI accent system — do not reach for this on buttons, borders, or chart colors. */
+  --beam-gradient: linear-gradient(
+    90deg,
+    #e14f5a 0%,
+    #e8935a 20%,
+    #e8d35a 40%,
+    #5ac47a 60%,
+    #5b9fe0 80%,
+    #9a6fd6 100%
+  );
+
+  --sans: "Plus Jakarta Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Numbers/eyebrow-tags (.font-mono) were JetBrains Mono (a coding font), then briefly Fraunces
+     (a display serif) for a more "sophisticated" look — the serif read as too unusual/not normal,
+     so this now just reuses the body sans, giving numbers a plain, ordinary look consistent with
+     the rest of the page instead of standing out as their own typographic voice. Variable name
+     kept as --mono (not renamed) so every existing .font-mono usage across the app follows this
+     without touching each file. */
+  --mono: var(--sans);
+
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background:
+    /* Refracted light beam — a diagonal chain of soft, elongated color blobs standing in for a
+       prism's rainbow. Global and static: painted on <body> with background-attachment:fixed,
+       so it's identical and motionless behind every page (not per-page, not scroll-tied), the
+       same proven technique already used for the ambient washes below — no fixed-position DOM
+       element, which is what caused the compositor bug documented further down this file. */
+    radial-gradient(ellipse 460px 150px at 6% 6%, rgba(255, 255, 255, 0.16), transparent 70%),
+    radial-gradient(ellipse 420px 140px at 16% 11%, rgba(225, 79, 90, 0.13), transparent 70%),
+    radial-gradient(ellipse 460px 150px at 27% 16%, rgba(232, 147, 90, 0.12), transparent 70%),
+    radial-gradient(ellipse 500px 160px at 39% 21%, rgba(232, 211, 90, 0.10), transparent 70%),
+    radial-gradient(ellipse 540px 170px at 52% 26%, rgba(90, 196, 122, 0.10), transparent 70%),
+    radial-gradient(ellipse 580px 180px at 65% 31%, rgba(91, 159, 224, 0.09), transparent 70%),
+    radial-gradient(ellipse 620px 190px at 79% 36%, rgba(154, 111, 214, 0.08), transparent 70%),
+    radial-gradient(ellipse 900px 700px at 12% 80%, rgba(36, 97, 110, 0.14), transparent 60%),
+    radial-gradient(ellipse 1400px 900px at 50% -10%, rgba(8, 18, 36, 0.7), transparent 65%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
+    var(--bg);
+  background-attachment: fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed;
+}
+
+/* Faceted diamond texture — the cut-glass motif from the reference moodboard, reduced to a
+   quiet ambient layer. A checkerboard of triangle facets (conic-gradient) alternating warm-lit
+   and shadowed, plus hairline facet edges (the two diagonal repeating-linear-gradients), all in
+   a single amber hue so it reads as glass catching light, not decoration competing with data. */
+.facet-bg {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 46px),
+    conic-gradient(from 45deg, rgba(224, 164, 88, 0.16) 0deg 90deg, transparent 90deg 180deg, rgba(224, 164, 88, 0.09) 180deg 270deg, transparent 270deg 360deg);
+  background-size: 46px 46px, 46px 46px, 92px 92px;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: padding-box;
+}
+
+.font-mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  transition: border-color 260ms cubic-bezier(0.16, 1, 0.3, 1), transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* True glassmorphism: an inner highlight hairline simulates light catching the top edge of a
+   glass pane, and a tinted (not pure-black) shadow keeps the elevation coherent with the
+   dusk-purple background instead of looking like a flat drop shadow pasted on top. */
+.card-glow {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 0 0 1px rgba(10, 8, 14, 0.3),
+    0 24px 60px -24px rgba(20, 12, 30, 0.75);
+}
+
+.card-solid {
+  background: var(--bg-elevated-solid);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Prism accents — deliberately rare, see the --facet-* comment above */
+.text-prism {
+  background: var(--facet-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.prism-ring {
+  position: relative;
+}
+.prism-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--facet-gradient);
+  opacity: 0.55;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--border-subtle);
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--accent-border);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.35s ease-out;
+}

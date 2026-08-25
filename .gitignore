@@ -1,0 +1,31 @@
+# Raw / processed datasets (large, regenerated from LendingClub extracts — see CLAUDE.md)
+*.csv
+
+# Trained model artifacts (large — only the 3 small models the live API
+# actually loads are tracked, so Render can deploy webapp/backend without
+# needing the full training pipeline; see webapp/README.md "Deploying")
+models/*.pkl
+!models/xgb_best.pkl
+!models/xgb_isotonic.pkl
+!models/lr_best.pkl
+
+# Scratch / backups
+backups/
+notes.py
+
+# Screen recordings
+*.mov
+
+# Claude Code local tooling (not part of the app)
+.claude/
+.agents/
+skills-lock.json
+
+# OS / editor
+.DS_Store
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Node
+node_modules/
