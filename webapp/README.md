@@ -84,10 +84,3 @@ proxy — so this env var is required for the deployed build to reach the backen
 Deploy. No `vercel.json` needed — there's no client-side router (`App.jsx` is a single-page
 `useState` switch), so there's nothing to add SPA rewrite rules for.
 
-### Note: the hero video isn't included
-
-`frontend/public/videos/*.mp4` is gitignored (watermarked trial-license asset, not cleared for
-public distribution — see `webapp/.gitignore`). The deployed Home page's hero will show just
-the background gradient with no scroll-scrubbed video; `ScrollVideo.jsx` already degrades to
-this gracefully (no crash, no broken box) when the video 404s. Swap in a properly licensed clip
-at that path if you want the video effect live.

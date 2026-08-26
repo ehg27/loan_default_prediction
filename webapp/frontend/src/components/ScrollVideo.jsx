@@ -27,9 +27,12 @@ export function ScrollVideo({ src, wrapperRef, children }) {
       video.loop = true;
       video.play().catch(() => {});
       setReady(true);
-      return;
     }
 
+    // Reduced-motion still needs the release-on-scroll behavior below (so the
+    // pinned video slides away instead of permanently covering the page) —
+    // it only skips the scrubbing step, since the video is already
+    // autoplaying/looping on its own in that case.
     const update = () => {
       const rect = wrapper.getBoundingClientRect();
       const vh = window.innerHeight;
@@ -37,7 +40,7 @@ export function ScrollVideo({ src, wrapperRef, children }) {
       const releaseOffset = Math.min(0, rect.bottom - vh);
       container.style.transform = `translateY(${releaseOffset}px)`;
 
-      if (video.duration) {
+      if (!reducedMotion && video.duration) {
         const scrollable = rect.height - vh;
         const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
         video.currentTime = progress * video.duration;
