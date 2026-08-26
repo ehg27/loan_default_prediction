@@ -7,7 +7,7 @@ import { useApi } from "../lib/useApi";
 import { Loading, ErrorBox } from "../components/ui/Loading";
 import { Card, CardHeader } from "../components/ui/Card";
 import { StatTile } from "../components/ui/StatTile";
-import { fmtPct, fmtRM, fmtNum } from "../lib/format";
+import { fmtPct, fmtUSD, fmtNum } from "../lib/format";
 
 const KEY_POINT_ORDER = ["baseline_approve_all", "financial_optimal", "f1_optimal", "chosen"];
 const KEY_POINT_COLOR = {
@@ -21,7 +21,7 @@ function CostDelta({ savings }) {
   const saves = savings >= 0;
   return (
     <span style={{ color: saves ? "var(--risk-low)" : "var(--risk-high)" }}>
-      {saves ? "saves" : "costs"} {fmtRM(Math.abs(savings))} {saves ? "versus" : "more than"} approving everyone
+      {saves ? "saves" : "costs"} {fmtUSD(Math.abs(savings))} {saves ? "versus" : "more than"} approving everyone
     </span>
   );
 }
@@ -53,7 +53,7 @@ function NarrativeSection({ keyPoints, lgdPct }) {
         ) : (
           <>The <b style={{ color: KEY_POINT_COLOR.chosen }}>chosen threshold</b> ({chosen.threshold.toFixed(4)}) is a deliberate
           balance between those two extremes, not either one on its own: it gives up
-          RM {((chosen.total_cost - fin.total_cost) / 1e6).toFixed(2)}M versus the pure cost-minimizer, in exchange for
+          ${((chosen.total_cost - fin.total_cost) / 1e6).toFixed(2)}M versus the pure cost-minimizer, in exchange for
           catching {(chosen.recall / fin.recall).toFixed(1)}× as many defaults ({fmtPct(chosen.recall, 1)} vs. {fmtPct(fin.recall, 1)} recall).
           It still <CostDelta savings={chosen.savings_vs_approve_all} />.</>
         )} Use the chart and slider below to explore the full trade-off curve (including F1) and see how this balance compares to the extremes.
@@ -89,9 +89,9 @@ function KeyPointsTable({ keyPoints, lgdPct }) {
                 <td className="py-2.5 px-3 font-mono" style={{ color: "var(--text-secondary)" }}>{p.precision != null ? fmtPct(p.precision) : "—"}</td>
                 <td className="py-2.5 px-3 font-mono" style={{ color: "var(--text-secondary)" }}>{fmtPct(p.recall)}</td>
                 <td className="py-2.5 px-3 font-mono" style={{ color: "var(--text-secondary)" }}>{p.f1.toFixed(4)}</td>
-                <td className="py-2.5 px-3 font-mono font-semibold" style={{ color: "var(--text)" }}>{fmtRM(p.total_cost)}</td>
+                <td className="py-2.5 px-3 font-mono font-semibold" style={{ color: "var(--text)" }}>{fmtUSD(p.total_cost)}</td>
                 <td className="py-2.5 px-3 font-mono font-semibold" style={{ color: savings > 0 ? "var(--risk-low)" : savings < 0 ? "var(--risk-high)" : "var(--text-tertiary)" }}>
-                  {savings > 0 ? "+" : ""}{fmtRM(savings)}
+                  {savings > 0 ? "+" : ""}{fmtUSD(savings)}
                 </td>
               </tr>
             );
@@ -122,22 +122,22 @@ function ModelCostComparison({ keyPoints, lgdPct }) {
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: "var(--accent)" }} />
             XGBoost (Tuned)
           </div>
-          <div className="text-[22px] font-mono font-bold mt-1" style={{ color: "var(--text)" }}>{fmtRM(xgb.total_cost)}</div>
+          <div className="text-[22px] font-mono font-bold mt-1" style={{ color: "var(--text)" }}>{fmtUSD(xgb.total_cost)}</div>
         </div>
         <div className="rounded-xl p-3.5" style={{ background: "var(--bg-elevated-2)", border: `1px solid ${lrCheaper ? "var(--accent-2-border)" : "var(--border)"}` }}>
           <div className="text-[11px] uppercase tracking-wide flex items-center gap-1.5" style={{ color: "var(--text-tertiary)" }}>
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: "var(--accent-2)" }} />
             Logistic Regression (Tuned)
           </div>
-          <div className="text-[22px] font-mono font-bold mt-1" style={{ color: "var(--text)" }}>{fmtRM(lr.total_cost)}</div>
+          <div className="text-[22px] font-mono font-bold mt-1" style={{ color: "var(--text)" }}>{fmtUSD(lr.total_cost)}</div>
         </div>
       </div>
       <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
         {lrCheaper ? (
-          <>No — at this reference point, <b style={{ color: "var(--risk-low)" }}>Logistic Regression is actually {fmtRM(Math.abs(diff))} cheaper</b> than
+          <>No — at this reference point, <b style={{ color: "var(--risk-low)" }}>Logistic Regression is actually {fmtUSD(Math.abs(diff))} cheaper</b> than
           XGBoost ({fmtPct(lr.recall, 1)} recall vs. XGBoost's {fmtPct(xgb.recall, 1)}).</>
         ) : (
-          <>No — <b style={{ color: "var(--risk-high)" }}>Logistic Regression costs {fmtRM(Math.abs(diff))} more</b> than XGBoost at the same
+          <>No — <b style={{ color: "var(--risk-high)" }}>Logistic Regression costs {fmtUSD(Math.abs(diff))} more</b> than XGBoost at the same
           threshold, mainly from catching fewer defaults ({fmtPct(lr.recall, 1)} recall vs. XGBoost's {fmtPct(xgb.recall, 1)}). This is the
           accuracy XGBoost trades a harder-to-explain model for — see Model Comparison for the full ROC-AUC gap.</>
         )}
@@ -225,7 +225,7 @@ export function ThresholdOptimizer({ onNavigate }) {
               />
               <YAxis
                 yAxisId="cost"
-                tickFormatter={(v) => fmtRM(v)} tick={{ fill: "var(--text-tertiary)", fontSize: 11 }} stroke="var(--border)" width={70}
+                tickFormatter={(v) => fmtUSD(v)} tick={{ fill: "var(--text-tertiary)", fontSize: 11 }} stroke="var(--border)" width={70}
               />
               <YAxis
                 yAxisId="f1" orientation="right" domain={[0, 1]}
@@ -233,7 +233,7 @@ export function ThresholdOptimizer({ onNavigate }) {
               />
               <Tooltip
                 contentStyle={{ background: "var(--bg-elevated-solid)", border: "1px solid var(--border)", borderRadius: 10, fontSize: 12 }}
-                formatter={(v, name) => (name === "F1 score" ? [fmtPct(v), name] : [fmtRM(v, false), name])}
+                formatter={(v, name) => (name === "F1 score" ? [fmtPct(v), name] : [fmtUSD(v, false), name])}
                 labelFormatter={(v) => `Threshold ${Number(v).toFixed(4)}`}
                 offset={28}
                 isAnimationActive={false}
@@ -355,13 +355,13 @@ export function ThresholdOptimizer({ onNavigate }) {
           <Card>
             <CardHeader eyebrow="At this threshold" title="Portfolio cost" />
             <div className="flex flex-col gap-2.5 mt-1">
-              <Row label="FP cost" value={fmtRM(active?.fp_cost)} color="var(--risk-mid)" />
-              <Row label="FN cost" value={fmtRM(active?.fn_cost)} color="var(--risk-high)" />
-              <Row label="Total cost" value={fmtRM(active?.total_cost)} color="var(--accent)" bold />
+              <Row label="FP cost" value={fmtUSD(active?.fp_cost)} color="var(--risk-mid)" />
+              <Row label="FN cost" value={fmtUSD(active?.fn_cost)} color="var(--risk-high)" />
+              <Row label="Total cost" value={fmtUSD(active?.total_cost)} color="var(--accent)" bold />
               <div style={{ borderTop: "1px solid var(--border)" }} className="pt-2.5" />
               <Row
                 label="Savings vs. no model"
-                value={`${active?.savings_vs_approve_all > 0 ? "+" : ""}${fmtRM(active?.savings_vs_approve_all)}`}
+                value={`${active?.savings_vs_approve_all > 0 ? "+" : ""}${fmtUSD(active?.savings_vs_approve_all)}`}
                 color={active?.savings_vs_approve_all > 0 ? "var(--risk-low)" : "var(--risk-high)"}
               />
               <Row label="False positives" value={fmtNum(active?.fp_count)} />

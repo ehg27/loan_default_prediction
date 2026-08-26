@@ -5,7 +5,7 @@ import { Loading, ErrorBox } from "../components/ui/Loading";
 import { StatTile } from "../components/ui/StatTile";
 import { Card, CardHeader } from "../components/ui/Card";
 import { ScrollVideo } from "../components/ScrollVideo";
-import { fmtNum, fmtPct, fmtRM } from "../lib/format";
+import { fmtNum, fmtPct, fmtUSD } from "../lib/format";
 
 const PROBLEMS = [
   {
@@ -71,18 +71,18 @@ function GlanceCard({ data, onNavigate }) {
       <div className="grid sm:grid-cols-3 gap-5 mt-2">
         <div>
           <div className="text-[11px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>Without a model</div>
-          <div className="text-[26px] font-mono font-bold" style={{ color: "var(--risk-high)" }}>-{fmtRM(baseline)}</div>
+          <div className="text-[26px] font-mono font-bold" style={{ color: "var(--risk-high)" }}>-{fmtUSD(baseline)}</div>
           <div className="text-[12px] mt-0.5" style={{ color: "var(--text-tertiary)" }}>Approve every applicant</div>
         </div>
         <div>
           <div className="text-[11px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>With this model</div>
-          <div className="text-[26px] font-mono font-bold" style={{ color: "var(--risk-high)" }}>-{fmtRM(totalCost)}</div>
+          <div className="text-[26px] font-mono font-bold" style={{ color: "var(--risk-high)" }}>-{fmtUSD(totalCost)}</div>
           <div className="text-[12px] mt-0.5" style={{ color: "var(--text-tertiary)" }}>At the chosen threshold</div>
         </div>
         <div>
           <div className="text-[11px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>{saves ? "Savings" : "Added cost"}</div>
           <div className="text-[30px] font-mono font-extrabold" style={{ color: saves ? "var(--risk-low)" : "var(--risk-high)" }}>
-            {saves ? "+" : "-"}{fmtRM(Math.abs(savings))}
+            {saves ? "+" : "-"}{fmtUSD(Math.abs(savings))}
           </div>
           <div className="text-[12px] mt-0.5" style={{ color: "var(--text-tertiary)" }}>{pct.toFixed(1)}% {saves ? "lower" : "higher"} cost</div>
         </div>
@@ -255,15 +255,15 @@ export function Home({ onNavigate }) {
                 <div className="flex items-end gap-6 mt-2">
                   <div>
                     <div className="text-[10.5px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>Interest earned</div>
-                    <div className="text-lg font-mono font-semibold" style={{ color: "var(--risk-low)" }}>{fmtRM(data.finance.total_interest)}</div>
+                    <div className="text-lg font-mono font-semibold" style={{ color: "var(--risk-low)" }}>{fmtUSD(data.finance.total_interest)}</div>
                   </div>
                   <div>
                     <div className="text-[10.5px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>Default loss</div>
-                    <div className="text-lg font-mono font-semibold" style={{ color: "var(--risk-high)" }}>-{fmtRM(data.finance.default_loss)}</div>
+                    <div className="text-lg font-mono font-semibold" style={{ color: "var(--risk-high)" }}>-{fmtUSD(data.finance.default_loss)}</div>
                   </div>
                   <div>
                     <div className="text-[10.5px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>Net</div>
-                    <div className="text-lg font-mono font-semibold" style={{ color: "var(--accent)" }}>{fmtRM(data.finance.net_value)}</div>
+                    <div className="text-lg font-mono font-semibold" style={{ color: "var(--accent)" }}>{fmtUSD(data.finance.net_value)}</div>
                   </div>
                 </div>
                 <div className="mt-3 h-1.5 rounded-full overflow-hidden flex" style={{ background: "var(--bg-elevated-2)" }}>

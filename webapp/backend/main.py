@@ -178,7 +178,7 @@ def display_value_for(fname, source):
         return source[k] if k in source else None
 
     if fname == "loan_amnt":
-        return f"RM {g('loan_amnt'):,.0f}"
+        return f"${g('loan_amnt'):,.0f}"
     if fname == "term":
         return f"{int(g('term'))} months"
     if fname == "dti_winsorized":
@@ -186,14 +186,14 @@ def display_value_for(fname, source):
     if fname == "revol_util_winsorized":
         return f"{g('revol_util_winsorized') * 100:.0f}%"
     if fname == "revol_bal_winsorized":
-        return f"RM {g('revol_bal_winsorized'):,.0f}"
+        return f"${g('revol_bal_winsorized'):,.0f}"
     if fname == "open_acc_winsorized":
         return f"{g('open_acc_winsorized'):.0f} accounts"
     if fname == "mort_acc_winsorized":
         return f"{g('mort_acc_winsorized'):.0f} accounts"
     if fname == "log_annual_inc":
         inc = g('annual_inc')
-        return f"RM {inc:,.0f}/yr" if inc is not None else "—"
+        return f"${inc:,.0f}/yr" if inc is not None else "—"
     if fname == "has_pub_rec":
         return "Yes" if g('has_pub_rec') else "No"
     if fname == "credit_age_months":

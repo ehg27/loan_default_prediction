@@ -6,7 +6,7 @@ import { Card, CardHeader } from "../components/ui/Card";
 import { Field, Input, Select } from "../components/ui/Field";
 import { Modal, ZoomButton } from "../components/ui/Modal";
 import { ShapWaterfall } from "../components/ShapWaterfall";
-import { fmtPct, fmtRM } from "../lib/format";
+import { fmtPct, fmtUSD } from "../lib/format";
 
 const PURPOSE_LABEL = (p) => p.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -70,7 +70,7 @@ function CaseCard({ c, onLoad, active }) {
     >
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-[12px] font-semibold" style={{ color: "var(--text)" }}>
-          {fmtRM(c.borrower.loan_amnt)} · {c.borrower.sub_grade}
+          {fmtUSD(c.borrower.loan_amnt)} · {c.borrower.sub_grade}
         </span>
         <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full" style={{ background: "var(--bg-elevated-2)", color: meta.color }}>
           {c.outcome}
@@ -217,7 +217,7 @@ export function TryIt() {
               title="Application details"
             />
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Loan amount" hint="RM">
+              <Field label="Loan amount" hint="$">
                 <Input type="number" min={500} step="any" value={form.loan_amnt} onChange={(e) => set("loan_amnt", e.target.value)} required />
               </Field>
               <Field label="Term">
@@ -240,7 +240,7 @@ export function TryIt() {
 
             <CardHeader eyebrow="Borrower" title="Income & residence" />
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Annual income" hint="RM">
+              <Field label="Annual income" hint="$">
                 <Input type="number" min={0} step="any" value={form.annual_inc} onChange={(e) => set("annual_inc", e.target.value)} required />
               </Field>
               <Field label="Home ownership">
@@ -268,7 +268,7 @@ export function TryIt() {
               <Field label="Revolving utilization" hint="%">
                 <Input type="number" min={0} max={100} step={1} value={form.revol_util_pct} onChange={(e) => set("revol_util_pct", e.target.value)} required />
               </Field>
-              <Field label="Revolving balance" hint="RM">
+              <Field label="Revolving balance" hint="$">
                 <Input type="number" min={0} step="any" value={form.revol_bal} onChange={(e) => set("revol_bal", e.target.value)} required />
               </Field>
               <Field label="Open credit lines">
@@ -390,7 +390,7 @@ export function TryIt() {
                   <div className="text-[15px] font-mono" style={{ color: "var(--text-tertiary)" }}>×</div>
                   <div>
                     <div className="text-[10.5px] uppercase tracking-wide" style={{ color: "var(--text-tertiary)" }}>EAD</div>
-                    <div className="text-[15px] font-mono font-semibold">{fmtRM(result.exposure_at_default)}</div>
+                    <div className="text-[15px] font-mono font-semibold">{fmtUSD(result.exposure_at_default)}</div>
                   </div>
                   <div className="text-[15px] font-mono" style={{ color: "var(--text-tertiary)" }}>×</div>
                   <div>
@@ -400,7 +400,7 @@ export function TryIt() {
                   <div className="text-[15px] font-mono" style={{ color: "var(--text-tertiary)" }}>=</div>
                   <div>
                     <div className="text-[10.5px] uppercase tracking-wide" style={{ color: "var(--accent)" }}>Expected Loss</div>
-                    <div className="text-[17px] font-mono font-bold" style={{ color: "var(--accent)" }}>{fmtRM(result.expected_loss, false)}</div>
+                    <div className="text-[17px] font-mono font-bold" style={{ color: "var(--accent)" }}>{fmtUSD(result.expected_loss, false)}</div>
                   </div>
                 </div>
               </Card>

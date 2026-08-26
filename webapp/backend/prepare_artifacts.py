@@ -64,7 +64,7 @@ def display_value_for(fname, orig):
     """Human-readable original-unit value for a SHAP hover tooltip (mirrors main.py's helper,
     but reads directly from the raw dataframe row `orig` since cases already carry every field)."""
     if fname == "loan_amnt":
-        return f"RM {orig['loan_amnt']:,.0f}"
+        return f"${orig['loan_amnt']:,.0f}"
     if fname == "term":
         return f"{int(orig['term'])} months"
     if fname == "dti_winsorized":
@@ -72,13 +72,13 @@ def display_value_for(fname, orig):
     if fname == "revol_util_winsorized":
         return f"{orig['revol_util_winsorized'] * 100:.0f}%"
     if fname == "revol_bal_winsorized":
-        return f"RM {orig['revol_bal_winsorized']:,.0f}"
+        return f"${orig['revol_bal_winsorized']:,.0f}"
     if fname == "open_acc_winsorized":
         return f"{orig['open_acc_winsorized']:.0f} accounts"
     if fname == "mort_acc_winsorized":
         return f"{orig['mort_acc_winsorized']:.0f} accounts"
     if fname == "log_annual_inc":
-        return f"RM {orig['annual_inc']:,.0f}/yr"
+        return f"${orig['annual_inc']:,.0f}/yr"
     if fname == "has_pub_rec":
         return "Yes" if orig['has_pub_rec'] else "No"
     if fname == "credit_age_months":

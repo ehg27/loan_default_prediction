@@ -8,15 +8,15 @@ export function fmtNum(x, digits = 0) {
   return x.toLocaleString(undefined, { maximumFractionDigits: digits, minimumFractionDigits: digits });
 }
 
-export function fmtRM(x, compact = true) {
+export function fmtUSD(x, compact = true) {
   if (x === null || x === undefined || Number.isNaN(x)) return "—";
   if (compact) {
     const abs = Math.abs(x);
-    if (abs >= 1e9) return `RM ${(x / 1e9).toFixed(2)}B`;
-    if (abs >= 1e6) return `RM ${(x / 1e6).toFixed(2)}M`;
-    if (abs >= 1e3) return `RM ${(x / 1e3).toFixed(1)}K`;
+    if (abs >= 1e9) return `$${(x / 1e9).toFixed(2)}B`;
+    if (abs >= 1e6) return `$${(x / 1e6).toFixed(2)}M`;
+    if (abs >= 1e3) return `$${(x / 1e3).toFixed(1)}K`;
   }
-  return `RM ${fmtNum(x, 0)}`;
+  return `$${fmtNum(x, 0)}`;
 }
 
 export const MODEL_COLORS = {
