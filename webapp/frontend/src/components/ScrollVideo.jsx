@@ -22,17 +22,12 @@ export function ScrollVideo({ src, wrapperRef, children }) {
     const wrapper = wrapperRef.current;
     if (!video || !container || !wrapper) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      video.loop = true;
-      video.play().catch(() => {});
-      setReady(true);
-    }
-
-    // Reduced-motion still needs the release-on-scroll behavior below (so the
-    // pinned video slides away instead of permanently covering the page) —
-    // it only skips the scrubbing step, since the video is already
-    // autoplaying/looping on its own in that case.
+    // Scroll-scrubbing runs unconditionally here, including for visitors
+    // with prefers-reduced-motion set — this hero is intentionally exempted
+    // from that preference rather than falling back to autoplay, per an
+    // explicit product decision (the alternative — respecting it — is the
+    // more accessible default and was the previous behavior; revisit if
+    // that trade-off changes).
     const update = () => {
       const rect = wrapper.getBoundingClientRect();
       const vh = window.innerHeight;
@@ -40,7 +35,7 @@ export function ScrollVideo({ src, wrapperRef, children }) {
       const releaseOffset = Math.min(0, rect.bottom - vh);
       container.style.transform = `translateY(${releaseOffset}px)`;
 
-      if (!reducedMotion && video.duration) {
+      if (video.duration) {
         const scrollable = rect.height - vh;
         const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
         video.currentTime = progress * video.duration;
