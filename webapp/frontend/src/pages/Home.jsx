@@ -125,7 +125,7 @@ export function Home({ onNavigate }) {
             >
               Accurate models are usually black boxes. Transparent models are usually weak. This project pairs
               a tuned <span style={{ color: "var(--accent)" }}>XGBoost</span> model with <span style={{ color: "var(--accent)" }}>SHAP</span> explanations
-              — so every credit decision is both accurate and easy to justify.
+              so every credit decision is both accurate and easy to justify.
             </p>
             <div className="flex gap-3 flex-wrap">
               <button
@@ -228,7 +228,7 @@ export function Home({ onNavigate }) {
 
             <section className="grid md:grid-cols-2 gap-4 mb-14">
               <Card>
-                <CardHeader eyebrow="Decisioning" title="Chosen operating threshold" subtitle="See the Threshold Optimizer for the full trade-off curve" />
+                <CardHeader eyebrow="Decisioning" title="Chosen operating threshold"/>
                 <div className="text-3xl font-mono font-semibold" style={{ color: "var(--accent)" }}>
                   {data.operating_threshold.toFixed(4)}
                 </div>
@@ -248,8 +248,8 @@ export function Home({ onNavigate }) {
 
               <Card>
                 <CardHeader
-                  eyebrow="Theoretical ceiling · not achievable"
-                  title={`Perfect-foresight value at LGD ${fmtPct(data.finance.lgd_used, 0)}`}
+                  eyebrow="Total Dataset Value"
+                  title={`Transaction Value at LGD ${fmtPct(data.finance.lgd_used, 0)}`}
                   subtitle="If the model knew every default in advance, full dataset"
                 />
                 <div className="flex items-end gap-6 mt-2">
@@ -274,7 +274,7 @@ export function Home({ onNavigate }) {
             </section>
 
             <section className="mb-14">
-              <CardHeader eyebrow="Methodology" title="How the framework works" subtitle="From raw loan applications to an explainable decision" />
+              <CardHeader eyebrow="Methodology" title="How the framework works"  />
               <div className="grid md:grid-cols-5 gap-3">
                 {PIPELINE_STEPS.map((step, i) => (
                   <div key={step.title} className="card p-4 relative">

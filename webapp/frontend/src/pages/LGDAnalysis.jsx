@@ -102,9 +102,7 @@ export function LGDAnalysis() {
         <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           This matches how the rest of the dashboard estimates dollar losses (default probability × loan amount ×
           this loss percentage) — using the loan's original amount, since that's what's known upfront, before
-          knowing how much of it will ever be repaid. A tiny share of loans ({fmtPct(data.clipping.share_below_0, 2)})
-          show more money recovered than was ever lost, from rounding — those are treated as a 0% loss rather than
-          a negative one.
+          knowing how much of it will ever be repaid.
         </p>
       </Card>
 
@@ -145,12 +143,12 @@ export function LGDAnalysis() {
         </ResponsiveContainer>
         <p className="text-[13px] leading-relaxed mt-3" style={{ color: "var(--text-secondary)" }}>
           Debt collection can take months or even years to finish. So a loan that defaulted only recently (like
-          2017 or 2018 here) is still, at the moment this data was captured, in the middle of that process — its
+          2017 or 2018 here) is still in the middle of being processed at the moment this data was captured. Its
           "amount recovered so far" is artificially low simply because collection isn't done yet, which makes its
           measured loss look artificially high (climbing toward 90%). The shaded years (2012–2015, highlighted in
           green) are old enough that collection has fully finished, so their loss numbers
           ({fmtPct(mature_vintage_range.weighted_lgd_low, 0)}–{fmtPct(mature_vintage_range.weighted_lgd_high, 0)}) are
-          the ones we trust — this is why we didn't just average every year together.
+          the ones we trust, whcih is why we didn't just average every year together.
         </p>
       </Card>
 
@@ -177,8 +175,8 @@ export function LGDAnalysis() {
         </div>
         <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
           {fmtPct(data.adopted_lgd, 0)} is the loss figure this dashboard uses everywhere it estimates a dollar
-          amount — including the Threshold Optimizer's cost calculations. It comes straight from real recovery
-          data on defaulted loans rather than a guess, and picking the middle of the trustworthy 2012–2015 range
+          amount, including the Threshold Optimizer's cost calculations. It comes straight from real recovery
+          data on defaulted loans, and picking the middle of the trustworthy 2012–2015 range
           keeps it from being skewed by loans whose recovery process isn't finished yet.
         </p>
       </Card>

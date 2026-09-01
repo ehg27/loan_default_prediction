@@ -38,8 +38,8 @@ function NarrativeSection({ keyPoints, lgdPct }) {
     <Card className="mb-6">
       <CardHeader eyebrow="Methodology" title={`Comparing operating points at LGD = ${lgdPct}%`} />
       <p className="text-[13px] leading-relaxed mb-3" style={{ color: "var(--text-secondary)" }}>
-        Every threshold trades off two goals: catching defaults (recall) and minimizing total financial cost — they
-        are not always the same objective. The <b style={{ color: KEY_POINT_COLOR.financial_optimal }}>cost-minimizing</b> threshold
+        Every threshold trades off two goals: catching defaults (recall) and minimizing total financial cost. 
+        The <b style={{ color: KEY_POINT_COLOR.financial_optimal }}>cost-minimizing</b> threshold
         ({fin.threshold.toFixed(4)}) <CostDelta savings={fin.savings_vs_approve_all} /> ({Math.abs(finSavingsPct).toFixed(1)}% of the no-model
         cost), catching {fmtPct(fin.recall, 1)} of defaults{finNegligible ? " — at this LGD that's barely distinguishable from doing nothing" : ""}.
         The <b style={{ color: KEY_POINT_COLOR.f1_optimal }}>F1-optimal</b> threshold
@@ -65,7 +65,7 @@ function NarrativeSection({ keyPoints, lgdPct }) {
 function KeyPointsTable({ keyPoints, lgdPct }) {
   return (
     <Card className="mb-6 overflow-x-auto">
-      <CardHeader eyebrow="Comparison" title="Three operating points on the same model" subtitle={`All computed on the held-out test set, LGD = ${lgdPct}%`} />
+      <CardHeader eyebrow="Comparison" title="Three operating points on the same model" />
       <table className="w-full text-[13px] border-collapse min-w-[720px]">
         <thead>
           <tr style={{ borderBottom: "1px solid var(--border)" }}>
@@ -114,7 +114,7 @@ function ModelCostComparison({ keyPoints, lgdPct }) {
       <CardHeader
         eyebrow="Model comparison"
         title="Does Logistic Regression cost less than XGBoost?"
-        subtitle={`Both judged at the same shared threshold (${xgb.threshold.toFixed(4)}) and LGD = ${lgdPct}%`}
+        subtitle={`With threshold ${xgb.threshold.toFixed(4)} and LGD = ${lgdPct}%`}
       />
       <div className="grid sm:grid-cols-2 gap-4 mb-3">
         <div className="rounded-xl p-3.5" style={{ background: "var(--bg-elevated-2)", border: `1px solid ${lrCheaper ? "var(--border)" : "var(--accent-border)"}` }}>
@@ -137,9 +137,9 @@ function ModelCostComparison({ keyPoints, lgdPct }) {
           <>No — at this reference point, <b style={{ color: "var(--risk-low)" }}>Logistic Regression is actually {fmtUSD(Math.abs(diff))} cheaper</b> than
           XGBoost ({fmtPct(lr.recall, 1)} recall vs. XGBoost's {fmtPct(xgb.recall, 1)}).</>
         ) : (
-          <>No — <b style={{ color: "var(--risk-high)" }}>Logistic Regression costs {fmtUSD(Math.abs(diff))} more</b> than XGBoost at the same
+          <><b style={{ color: "var(--risk-high)" }}>Logistic Regression costs {fmtUSD(Math.abs(diff))} more</b> than XGBoost at the same
           threshold, mainly from catching fewer defaults ({fmtPct(lr.recall, 1)} recall vs. XGBoost's {fmtPct(xgb.recall, 1)}). This is the
-          accuracy XGBoost trades a harder-to-explain model for — see Model Comparison for the full ROC-AUC gap.</>
+          accuracy XGBoost trades off as a model that is harder to explain.</>
         )}
       </p>
     </Card>
@@ -192,8 +192,7 @@ export function ThresholdOptimizer({ onNavigate }) {
         </p>
         <p className="text-[12px] mt-2 max-w-[720px]" style={{ color: "var(--text-tertiary)" }}>
           This project uses <b style={{ color: "var(--text-secondary)" }}>LGD = {(data.key_points_lgd * 100).toFixed(0)}%</b> —
-          the share of a defaulted loan's value that's never recovered. Instead of guessing a typical industry
-          figure, this was calculated from real repayment records on {fmtNum(269320)} loans that actually defaulted.{" "}
+          {" "}
           {onNavigate && (
             <button onClick={() => onNavigate("lgd")} className="font-medium" style={{ color: "var(--accent)" }}>
               See the full breakdown →
