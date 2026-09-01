@@ -106,11 +106,11 @@ export function Home({ onNavigate }) {
 
   return (
     <div>
-      <div ref={wrapperRef} style={{ height: "255vh" }}>
+      <div ref={wrapperRef} style={{ height: "225vh" }}>
         <ScrollVideo src="/videos/demo-3.mp4" wrapperRef={wrapperRef}>
           <div className="flex-1 flex flex-col justify-center px-6 lg:px-16 max-w-[1180px] mx-auto w-full">
             <div className="text-[11px] tracking-[0.16em] uppercase font-medium mb-4" style={{ color: "var(--accent)" }}>
-              REFRACTO · Enchancing Transparency in Credit Risk
+              REFRACTO · Enhancing Transparency in Credit Risk
             </div>
             <h1 className="text-[50px] leading-[1.05] font-semibold tracking-tight mb-5 max-w-[760px]" style={{ color: "var(--text)" }}>
               A hybrid XAI framework that makes credit decisions <span className="text-prism">defensible.</span>
