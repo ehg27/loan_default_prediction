@@ -1,0 +1,45 @@
+# Build context is the repo root (see webapp/backend/Dockerfile). Keep it small — only the
+# backend source + the 3 live-inference models under models/ are actually needed in the image.
+#
+# NOTE: unlike .gitignore, a bare "*.ext" pattern here is NOT recursive — it only matches the
+# context root. Use "**/" prefixes for anything that might exist in a subdirectory (verified by
+# building against this file and inspecting the resulting context — see chat history).
+.git
+.git/**
+
+**/*.csv
+**/*.ipynb
+**/*.pdf
+**/*.docx
+**/~$*.docx
+**/*.png
+**/*.xlsx
+**/__pycache__
+**/__pycache__/**
+**/*.pyc
+**/.env
+
+backups/
+backups/**
+
+webapp/frontend/
+webapp/frontend/**
+
+.agents/
+.agents/**
+.claude/
+.claude/**
+.github/
+.github/**
+CLAUDE.md
+notes.py
+skills-lock.json
+**/.DS_Store
+
+# Top-level models/ is 1.2GB (all 8 trained models); only these 3 are used for live inference.
+# (This is a file-level exclude, not a directory-level one — negating individual files here
+# does NOT have the same "re-includes everything" problem a `!models/` directory negation has.)
+models/*.pkl
+!models/xgb_best.pkl
+!models/xgb_isotonic.pkl
+!models/lr_best.pkl

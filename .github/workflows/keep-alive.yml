@@ -1,4 +1,4 @@
-name: Keep Render backend awake
+name: Keep Fly.io backend awake
 
 on:
   schedule:
@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping backend health endpoint
-        run: curl -fsS https://refracto-backend.onrender.com/api/health
+        run: curl -fsS https://refracto-backend.fly.dev/api/health

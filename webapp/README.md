@@ -42,33 +42,48 @@ If you retrain models in `Modeling.ipynb` and overwrite `../models/*.pkl`, re-ru
 `prepare_artifacts.py` and restart the backend (it caches artifacts in memory on first
 request, so a restart is required to pick up new files).
 
-## Deploying (frontend on Vercel, backend on Render)
+## Deploying (frontend on Vercel, backend on Fly.io)
 
 The backend keeps trained models loaded in memory as a persistent process — it doesn't fit
 Vercel's serverless Python functions well (size limits, cold starts re-importing xgboost/shap
 on every idle request). Split hosting instead:
 
-### 1. Backend → Render
+### 1. Backend → Fly.io
 
-`../render.yaml` (repo root) is a Render Blueprint that points at `webapp/backend`. From the
-Render dashboard: **New → Blueprint**, connect this GitHub repo, and Render will read
-`render.yaml` and provision the service automatically (free plan, `pip install -r
-requirements.txt`, then `uvicorn main:app --host 0.0.0.0 --port $PORT`).
+`../fly.toml` (repo root) + `backend/Dockerfile` define the deploy. The build context is the
+**repo root**, not `webapp/backend` — `main.py` loads the 3 live-inference models from
+`../../models` relative to itself (`SRC_MODELS_DIR`), a path that only exists outside
+`webapp/backend`, so `fly.toml`/commands below all run from the repo root. One-time setup:
 
-If you'd rather set it up by hand instead of via the Blueprint: **New → Web Service**, connect
-the repo, set **Root Directory** to `webapp/backend`, **Build Command** to `pip install -r
-requirements.txt`, **Start Command** to `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+```bash
+brew install flyctl        # or see https://fly.io/docs/hands-on/install-flyctl/
+fly auth login
+```
 
-Once deployed, note the service URL — something like `https://refracto-backend.onrender.com`.
-Free-tier Render services spin down after 15 min idle and take ~30-50s to wake on the next
-request; the first load after idle will be slow.
+Then, with `prepare_artifacts.py` already run (see "First-time setup" above —
+`webapp/backend/artifacts/*.json` and `webapp/backend/models/*.pkl` must exist on disk) and
+`models/xgb_best.pkl`, `xgb_isotonic.pkl`, `lr_best.pkl` present at the repo root:
 
-**Requires the 3 small live-inference models to be committed** (`../models/xgb_best.pkl`,
-`xgb_isotonic.pkl`, `lr_best.pkl` — a few hundred KB total; the root `.gitignore` explicitly
-un-ignores just these 3, everything else in `models/` stays out of git) plus
-`backend/artifacts/*.json` and `backend/models/*.pkl` (both normally gitignored for local dev
-since they're regenerable — force-add them for a deploy: `git add -f webapp/backend/artifacts
-webapp/backend/models`). Regenerate and re-commit whenever `prepare_artifacts.py` changes.
+```bash
+cd FYP_Project              # repo root — where fly.toml lives
+fly launch --no-deploy      # first time only — detects fly.toml, creates the app on Fly
+fly deploy
+```
+
+`fly deploy` builds using the **local directory** as the build context — unlike the old Render
+setup, nothing needs to be force-added to git; whatever's on disk locally gets baked into the
+image (`.dockerignore` at the repo root keeps the big unrelated files — raw CSVs, notebooks, the
+frontend — out of the build). Regenerate (`prepare_artifacts.py`) and `fly deploy` again
+whenever the models or artifact-generation logic change.
+
+Once deployed, note the app URL — `https://<app-name>.fly.dev` (e.g.
+`https://refracto-backend.fly.dev`; if `refracto-backend` is taken, pick another name via the
+`fly launch` prompt or by changing `app` in `fly.toml` before creating it).
+
+`fly.toml` ships with **scale-to-zero** (`min_machines_running = 0`): cheapest option, but the
+first request after idle pays a cold-start delay (same tradeoff Render's free tier had). For an
+always-on backend with no cold starts instead (bills continuously), change
+`min_machines_running` to `1` in `fly.toml` and redeploy.
 
 ### 2. Frontend → Vercel
 
@@ -76,7 +91,7 @@ From the Vercel dashboard: **New Project**, import this GitHub repo, set **Root 
 `webapp/frontend` (Vercel auto-detects the Vite build otherwise). Add one environment variable:
 
 ```
-VITE_API_BASE = https://<your-render-service>.onrender.com/api
+VITE_API_BASE = https://<your-app-name>.fly.dev/api
 ```
 
 (`src/lib/api.js` falls back to relative `/api` — which only works via Vite's local dev
